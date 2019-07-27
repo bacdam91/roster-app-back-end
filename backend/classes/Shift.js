@@ -3,32 +3,20 @@ const Schema = mongoose.Schema;
 const MILLISECONDS_PER_HOUR = 60 * 60 * 1000;
 
 const ShiftSchema = Schema({
-	startTime: Date,
-	endTime: Date,
-	pharmacyID: Schema.Types.ObjectId,
-	pharmacistID: Schema.Types.ObjectId
+	startTime: { type: Date, required: true },
+	endTime: { type: Date, required: true },
+	pharmacyID: { type: Schema.Types.ObjectId, required: true },
+	pharmacistID: { type: Schema.Types.ObjectId, required: true }
 });
 
 ShiftSchema.statics.getShiftsByPharmacistID = async function(pharmacistID) {
 	return await Shift.find({ pharmacistID });
 };
 
-ShiftSchema.statics.createShift = async function(
-	startTime,
-	endTime,
-	pharmacyID,
-	pharmacistID
-) {
-	const shift = new Shift({
-		startTime,
-		endTime,
-		pharmacyID,
-		pharmacistID
-	});
+ShiftSchema.statics.createShift = async function(shiftData) {
+	const shift = new Shift(shiftData);
 
-	shift.save().then(() => {
-		console.log("Save successful..");
-	});
+	return shift.save();
 };
 
 const Shift = mongoose.model("shift", ShiftSchema);
